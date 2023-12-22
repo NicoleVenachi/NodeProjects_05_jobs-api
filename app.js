@@ -1,22 +1,36 @@
+
+// *** imports ***
 require('dotenv').config();
 require('express-async-errors');
-const express = require('express');
-const app = express();
 
-// error handler
+const express = require('express');
+
+// error handlers
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
+
+// connect DB
+
+// routers
+const authRouter = require('./routes/auth');
+const jobsRouter = require('./routes/jobs');
+
+// *** inicializo express app y agrego JSON middleware ***
+const app = express();
 
 app.use(express.json());
 // extra packages
 
-// routes
-app.get('/', (req, res) => {
-  res.send('jobs api');
-});
+// *** routes ***
+app.use('api/v1/auth', authRouter); // a futuro domin/api/...
+app.use('api/v1/jobs', jobsRouter);
 
+// *** middlewares ***
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+
+
+// *** servr running (async start function to run after the db connection) ***
 
 const port = process.env.PORT || 3000;
 
