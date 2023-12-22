@@ -1,6 +1,7 @@
 
 // *** imports ***
 const mongoose = require('mongoose');
+const bcrypt = require("bcryptjs")
 
 // *** SW Schemas definition ***
 const UserSchema = new mongoose.Schema({
@@ -25,6 +26,17 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     // maxlength: 12, //una vez sea hasheado, se quitara esta limitacion
   }
+})
+
+// *** Mongose middleware ***
+UserSchema.pre('save', async function (next) {
+  // no uso arrow functions por el .thisn, que aqui apunta al doucment
+
+  const salt = await bcrypt.genSalt(10); //gen random byte
+
+  this.password = await bcrypt.hash(this.password, salt) // hash password and random byte
+
+  next()
 })
 
 // *** Create the model in the DB ***

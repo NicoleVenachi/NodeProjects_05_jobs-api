@@ -13,16 +13,16 @@ const bcrypt = require("bcryptjs")
 const register = async (req, res) => {
 
   // *** Hash password ***
-  const {name, email, password} = req.body
+  // const {name, email, password} = req.body
 
-  const salt = await bcrypt.genSalt(10); //gen random byte
-  const hashedPassword = await bcrypt.hash(password, salt) // hash password and random byte
+  // const salt = await bcrypt.genSalt(10); //gen random byte
+  // const hashedPassword = await bcrypt.hash(password, salt) // hash password and random byte
 
 
-  // temprorary user object with the hashed password
-  const tempUser = {name, email, password: hashedPassword}
+  // // temprorary user object with the hashed password
+  // const tempUser = {name, email, password: hashedPassword}
 
-  // *** Validate user info using mongoose *** 
+  // *** Validate user info using mongoose and Save user *** 
   
   // ---> checks in the controller
 
@@ -31,7 +31,7 @@ const register = async (req, res) => {
   // }
 
   // ---> mongoose internal checks
-  const user = await Model.create({... tempUser}) 
+  const user = await Model.create({... req.body}) 
 
 
 
