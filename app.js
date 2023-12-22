@@ -22,8 +22,8 @@ app.use(express.json());
 // extra packages
 
 // *** routes ***
-app.use('api/v1/auth', authRouter); // a futuro domin/api/...
-app.use('api/v1/jobs', jobsRouter);
+app.use('/api/v1/auth', authRouter); // a futuro domin/api/...
+app.use('/api/v1/jobs', jobsRouter);
 
 // *** middlewares ***
 app.use(notFoundMiddleware);

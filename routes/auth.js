@@ -10,8 +10,8 @@ const router = express.Router();
 
 // *** Routing ***
 
-router.get('/register', register);
-router.post('/login', login);
+router.post('/register', register);
+router.get('/login', login);
 
 
 module.exports = router;
