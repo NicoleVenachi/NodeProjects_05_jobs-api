@@ -8,6 +8,8 @@ const { BadRequestError } = require("../errors");
 
 const bcrypt = require("bcryptjs")
 
+const jwt = require("jsonwebtoken")
+
 // *** Lógica de negocio ***
 
 const register = async (req, res) => {
@@ -24,7 +26,7 @@ const register = async (req, res) => {
 
   // *** Validate user info using mongoose and Save user *** 
   
-  // ---> checks in the controller
+  // ---> checks in the controller (no needed, mongoose will do it automatically)
 
   // if (!name || !email || !password) {
   //   throw new BadRequestError('Please provide name, email and password')
@@ -34,12 +36,19 @@ const register = async (req, res) => {
   const user = await Model.create({... req.body}) 
 
 
-
   // *** Create/Sign a token *** 
+  
+  const token = await jwt.sign(
+    {userId: user._id, name:user.name}, // the payload is the use created/returned in/from the db
+    'jwtSecert',
+    {expiresIn: '30d'}
+  )
 
   // *** Send a response (including the token) ***
-  
-  res.status(StatusCodes.CREATED).json({user})
+  // puedo tambien mandar un mensajito, el nombre del usuario, o lo que sea
+  res.status(StatusCodes.CREATED).json({
+    user:{name: user.name},
+  token})
 }
 
 const login = async (req, res) => {
