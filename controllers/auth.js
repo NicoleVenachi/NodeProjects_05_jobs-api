@@ -4,7 +4,7 @@ const { models } = require("mongoose");
 const Model = require("../models/User"); //User model
 
 const {StatusCodes} = require("http-status-codes");
-const { BadRequestError } = require("../errors");
+const { BadRequestError, UnauthenticatedError } = require("../errors");
 
 const bcrypt = require("bcryptjs")
 
@@ -37,7 +37,33 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
-  res.send('Login user')
+  // *** Validate credentials ***
+  // ---> checks in the controller
+  const {email, password} = req.body;
+
+  if (!email || !password) {
+    throw new BadRequestError('Please provide an email and password')
+  }
+
+
+  // *** Quering the user *** 
+  const user = await Model.findOne({email}) // 
+
+
+  // *** Verificating if credentials are okay ***
+  if (!user) {
+    throw new UnauthenticatedError('Invalid credentials')
+  }
+
+  // *** Sing a token for the user authorization ***
+  const token = user.createJWT();
+
+
+  // *** Sending a response ***
+  res.status(StatusCodes.OK).json({
+    user: {name: user.getName()}, 
+    token
+  });
 }
 
 module.exports = {
