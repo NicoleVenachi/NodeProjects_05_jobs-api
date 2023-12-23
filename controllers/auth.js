@@ -46,12 +46,18 @@ const login = async (req, res) => {
   }
 
 
-  // *** Quering the user *** 
+  // *** Quering the user  *** 
   const user = await Model.findOne({email}) // 
 
 
   // *** Verificating if credentials are okay ***
-  if (!user) {
+  if (!user) { // user exists verification
+    throw new UnauthenticatedError('Invalid credentials')
+  }
+
+  // password verification/comparation
+  const isPasswordCorrect = await user.comparePassword(password);
+  if (!isPasswordCorrect) {
     throw new UnauthenticatedError('Invalid credentials')
   }
 
