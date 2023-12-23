@@ -5,6 +5,9 @@ const {UnauthenticatedError } = require("../errors");
 
 const UserModel = require("../models/User"); //User model
 const jwt = require("jsonwebtoken")
+require('dotenv').config();
+
+// *** Middleware ***
 
 const auth = async function (req,res, next) {
   
@@ -22,9 +25,10 @@ const auth = async function (req,res, next) {
 
   //validate the token
   try {
-    const payload = jwt.verify(token, process.env.SECRET_JWT) // get token payload
+    
+    const payload = jwt.verify(token, process.env.JWT_SECRET) // get token payload
 
-    req.user = {userId: payload.userId, name: payload.name} //atach the user to the request
+    req.user = {userId: payload.userId, name: payload.name} //atach the user to the request (in the job route for this case)
 
     next(); // lauch next middleware
   } catch (error) {
