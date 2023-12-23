@@ -28,6 +28,10 @@ const auth = async function (req,res, next) {
     
     const payload = jwt.verify(token, process.env.JWT_SECRET) // get token payload
 
+    // otra opcion, buscan el user a partir de la DB, sacando unicamente el id del token. Antes de enviarlo, quitamos el password de las columnas traidas (con el -select)
+    // const user = UserModel.findById(payload.id).select('-password')
+    // req.user = user
+
     req.user = {userId: payload.userId, name: payload.name} //atach the user to the request (in the job route for this case)
 
     next(); // lauch next middleware
