@@ -55,8 +55,39 @@ const createJob = async (req, res) => {
   // *** Send response ***
   res.status(StatusCodes.CREATED).json({job})
 }
+
 const updateJob = async (req, res) => {
-  res.send('Update job')
+  // *** Extract the JOB Id (from the URL params), user info (eased by the auth Middleware) and the info to update ***
+  const {id: jobId} = req.params;
+  const {user: userId, body: {company, position}} = req;
+  
+  // *** Valitation (controller checks) ***
+  if (!company || !position) {
+    throw new BadRequestError('Company or position fields cannot be empty');
+  }
+  
+  // *** Updating the job (also runnig inner mongoose validators) ***
+  const job = await Model.findByIdAndUpdate ({
+    _id: jobId,
+    createdBy: userId // just its corresponding user can access/edit this
+  }, 
+  req.body,
+  { // patch not updated, do not passed overwrite
+    new: true, 
+    runValidators: true
+  }
+  )
+
+  // *** Checking errors ***
+  if (!job) { // passed wrong id
+    throw new NotFoundError(`No job with id ${jobId}`)
+  }
+
+  // casting error (jobId didnt match Schema format)
+
+
+  // *** Send response ***
+  res.status(StatusCodes.OK).json({job})
 }
 
 
