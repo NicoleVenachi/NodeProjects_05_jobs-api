@@ -9,7 +9,19 @@ const { BadRequestError, NotFoundError } = require('../errors');
 // *** Jobs CRUD Operations ***
 
 const getAllJobs = async (req, res) => {
-  res.send('Get all jobs')
+
+  // *** Extract the user info (eased by the auth Middleware) ***
+  const userId = req.user.userId
+
+  // *** Querying all the user jobs ***
+  const jobs = await Model
+    .find({createdBy: userId})
+    .sort({'createdAt': -1}) // sort by date ascending
+
+  console.log(jobs);
+  // *** Send response ***
+  res.status(StatusCodes.OK).json({jobs, nbHits: jobs.length})
+
 }
 
 const getJob = async (req, res) => {
@@ -26,9 +38,7 @@ const createJob = async (req, res) => {
   const job = await Model.create(req.body);
 
   // *** Send response ***
-  res.status(StatusCodes.OK).json({job})
-  // BadRequestError
-  // NotFoundError
+  res.status(StatusCodes.CREATED).json({job})
 }
 const updateJob = async (req, res) => {
   res.send('Update job')
