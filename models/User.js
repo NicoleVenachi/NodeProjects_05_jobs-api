@@ -1,9 +1,10 @@
 
 // *** imports ***
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 
 const bcrypt = require("bcryptjs")
-
 const jwt = require("jsonwebtoken")
 
 // *** SW Schemas definition ***
@@ -51,8 +52,8 @@ UserSchema.methods.createJWT = function () {
 
   return jwt.sign(
     {userId: this._id, name:this.name}, // the payload is the use created/returned in/from the db
-    'jwtSecert',
-    {expiresIn: '30d'}
+    process.env.JWT_SECRET,
+    {expiresIn: process.env.JWT_LIEFTIME}
   )
 }
 
