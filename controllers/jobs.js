@@ -1,3 +1,10 @@
+// *** Imports ***
+
+const {StatusCodes} = require('http-status-codes');
+
+const Model = require('../models/Job');
+const { BadRequestError, NotFoundError } = require('../errors');
+
 
 // *** Jobs CRUD Operations ***
 
@@ -10,7 +17,18 @@ const getJob = async (req, res) => {
 }
 
 const createJob = async (req, res) => {
-  res.json(req.user)
+  
+  // *** Extract the user info (eased by the auth Middleware) ***
+  req.body.createdBy = req.user.userId
+
+
+  // *** Create the job (Also using internal mongoose checks) ***
+  const job = await Model.create(req.body);
+
+  // *** Send response ***
+  res.status(StatusCodes.OK).json({job})
+  // BadRequestError
+  // NotFoundError
 }
 const updateJob = async (req, res) => {
   res.send('Update job')

@@ -20,7 +20,7 @@ const JobSchema = new mongoose.Schema({
     default: 'pending'
   },
   createdBy: { // link to theuser model
-    type: mongoose.Types.ObjectId(), // type is another schema
+    type: mongoose.Types.ObjectId, // type is another schema (It JUST needs the collection ID to be created)
     ref: 'User', // name of the schema in the DB
     required: [true, 'Please provide user'],
   }
