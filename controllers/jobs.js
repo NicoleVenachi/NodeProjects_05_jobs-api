@@ -18,21 +18,36 @@ const getAllJobs = async (req, res) => {
     .find({createdBy: userId})
     .sort({'createdAt': -1}) // sort by date ascending
 
-  console.log(jobs);
   // *** Send response ***
   res.status(StatusCodes.OK).json({jobs, nbHits: jobs.length})
 
 }
 
 const getJob = async (req, res) => {
-  res.send('Get job')
+  // *** Extract the JOB Id (from the URL params) and user info (eased by the auth Middleware) ***
+  const {id: jobId} = req.params;
+  const userId = req.user.userId;
+
+  // *** Querying the job ***
+  const job = await Model.findOne({
+    _id: jobId,
+    createdBy: userId // just its corresponding user can access this
+  })
+
+
+  // *** Checking errors ***
+  if (!job) { // passed wrong id
+    throw new NotFoundError(`No job with id ${jobId}`)
+  }
+
+  // casting error (jobId didnt match Schema format)
+
+
+  // *** Send response ***
+  res.status(StatusCodes.OK).json({job})
 }
 
 const createJob = async (req, res) => {
-  
-  // *** Extract the user info (eased by the auth Middleware) ***
-  req.body.createdBy = req.user.userId
-
 
   // *** Create the job (Also using internal mongoose checks) ***
   const job = await Model.create(req.body);
