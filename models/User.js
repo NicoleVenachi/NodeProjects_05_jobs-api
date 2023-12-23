@@ -1,7 +1,10 @@
 
 // *** imports ***
 const mongoose = require('mongoose');
+
 const bcrypt = require("bcryptjs")
+
+const jwt = require("jsonwebtoken")
 
 // *** SW Schemas definition ***
 const UserSchema = new mongoose.Schema({
@@ -38,6 +41,20 @@ UserSchema.pre('save', async function (next) {
 
   next()
 })
+
+// *** Mongose Schema Instance Methods ***
+UserSchema.methods.getName = function () {
+  return this.name;
+}
+
+UserSchema.methods.createJWT = function () {
+
+  return jwt.sign(
+    {userId: this._id, name:this.name}, // the payload is the use created/returned in/from the db
+    'jwtSecert',
+    {expiresIn: '30d'}
+  )
+}
 
 // *** Create the model in the DB ***
 

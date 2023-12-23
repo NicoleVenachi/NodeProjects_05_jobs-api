@@ -38,17 +38,20 @@ const register = async (req, res) => {
 
   // *** Create/Sign a token *** 
   
-  const token = await jwt.sign(
-    {userId: user._id, name:user.name}, // the payload is the use created/returned in/from the db
-    'jwtSecert',
-    {expiresIn: '30d'}
-  )
+  // const token = await jwt.sign(
+  //   {userId: user._id, name:user.name}, // the payload is the use created/returned in/from the db
+  //   'jwtSecert',
+  //   {expiresIn: '30d'}
+  // )
+
+  const token = user.createJWT();
 
   // *** Send a response (including the token) ***
   // puedo tambien mandar un mensajito, el nombre del usuario, o lo que sea
   res.status(StatusCodes.CREATED).json({
-    user:{name: user.name},
-  token})
+    user:{name: user.getName()},
+    token
+})
 }
 
 const login = async (req, res) => {
