@@ -50,7 +50,7 @@ const login = async (req, res) => {
   const user = await Model.findOne({email}) // 
 
 
-  // *** Verificating if credentials are okay ***
+  // *** Checking if credentials are okay ***
   if (!user) { // user exists verification
     throw new UnauthenticatedError('Invalid credentials')
   }
