@@ -44,6 +44,11 @@ app.use(cors());
 app.use(xss());
 
 // *** routes ***
+
+app.get('/', (req, res)=> {
+  res.send('Jobs api')
+})// dummy route, to see if it works ok
+
 app.use('/api/v1/auth', authRouter); // a futuro domin/api/...
 app.use('/api/v1/jobs', authenticateUser,jobsRouter);
 
