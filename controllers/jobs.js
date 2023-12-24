@@ -40,7 +40,7 @@ const getJob = async (req, res) => {
     throw new NotFoundError(`No job with id ${jobId}`)
   }
 
-  // casting error (jobId didnt match Schema format)
+  // casting error (jobId Sintax doesn't match exctly what mongoose is looking for)
 
 
   // *** Send response ***
