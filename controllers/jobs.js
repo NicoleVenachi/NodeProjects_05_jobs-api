@@ -49,6 +49,9 @@ const getJob = async (req, res) => {
 
 const createJob = async (req, res) => {
 
+  // *** Extract the user info (eased by the auth Middleware) ***
+  req.body.createdBy = req.user.userId
+
   // *** Create the job (Also using internal mongoose checks) ***
   const job = await Model.create(req.body);
 
@@ -92,7 +95,26 @@ const updateJob = async (req, res) => {
 
 
 const deleteJob = async (req, res) => {
-  res.send('Delete job')
+  // *** Extract the JOB Id (from the URL params), user info (eased by the auth Middleware) and the info to update ***
+  const {id: jobId} = req.params;
+  const userId = req.user;
+  
+
+  // *** Deleting the job ***
+  const job = await Model.findByIdAndRemove({
+    _id: jobId,
+    createdBy: userId // just its corresponding user can access/edit this
+  })
+  
+
+  // *** Checking errors ***
+  if (!job) { // passed wrong id
+    throw new NotFoundError(`No job with id ${jobId}`)
+  }
+
+
+  // *** Send response ***
+  res.status(StatusCodes.OK).json({job})
 }
 
 module.exports = {
