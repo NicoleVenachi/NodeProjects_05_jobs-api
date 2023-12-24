@@ -39,6 +39,10 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.statusCode = StatusCodes.BAD_REQUEST
   }  // validation errors
 
+  if (err.name === "CastError"){
+    customError.msg = `No item found with id: ${err.value}`
+    customError.statusCode = StatusCodes.NOT_FOUND
+  } // cast errors (Sintax doesn't match exctly what mongoose is looking for)
 
   // *** Send response ***
 
