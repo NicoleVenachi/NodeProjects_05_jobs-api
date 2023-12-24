@@ -5,6 +5,14 @@ require('express-async-errors');
 
 const express = require('express');
 
+// extra security packages
+const helmet = require('helmet');
+const cors = require('cors');
+const xss = require('xss-clean');
+const rateLimiter = require('express-rate-limit')
+
+
+
 // middlewares
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -16,11 +24,24 @@ const connectDB = require('./db/connect');
 const authRouter = require('./routes/auth');
 const jobsRouter = require('./routes/jobs');
 
-// *** inicializo express app y agrego JSON middleware ***
+// *** inicializo express app y agrego JSON middleware, asi com security middlewares ***
 const app = express();
 
+app.set('trust proxy', 1); // para reverse-proxy apps (e.g., para Heroku)
+app.use(
+  rateLimiter(
+    {
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+    }
+  )
+); // seting up time, how long and how many requeests
+
 app.use(express.json());
-// extra packages
+
+app.use(helmet());
+app.use(cors());
+app.use(xss());
 
 // *** routes ***
 app.use('/api/v1/auth', authRouter); // a futuro domin/api/...
