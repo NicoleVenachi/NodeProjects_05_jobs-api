@@ -24,6 +24,13 @@ const connectDB = require('./db/connect');
 const authRouter = require('./routes/auth');
 const jobsRouter = require('./routes/jobs');
 
+// Swagger doucmentation
+const swaggerUI = require('swagger-ui-express')
+const YAML = require('yamljs')
+
+const swaggerDcoument = YAML.load('./swagger.yaml')
+
+
 // *** inicializo express app y agrego JSON middleware, asi com security middlewares ***
 const app = express();
 
@@ -44,10 +51,11 @@ app.use(cors());
 app.use(xss());
 
 // *** routes ***
-
 app.get('/', (req, res)=> {
-  res.send('Jobs api')
+  res.send('<h1> Jobs api </h1> <a href="/api-docs"> Documentation </a>')
 })// dummy route, to see if it works ok
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDcoument)) // swagger documentation
 
 app.use('/api/v1/auth', authRouter); // a futuro domin/api/...
 app.use('/api/v1/jobs', authenticateUser,jobsRouter);
